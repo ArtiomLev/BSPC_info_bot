@@ -55,7 +55,7 @@ async def cmd_start(message: types.Message):
 async def cmd_bells(message: types.Message, command: CommandObject):
     """Вывод расписания звонков"""
     if command.args is None:
-        if date.today().weekday() == 7:
+        if date.today().weekday() == 6:
             await message.answer("Сегодня воскресенье. \n"
                                  "Для того чтобы получить звонки на конкретный день напиши:\n"
                                  "/bells [день]\n"
@@ -64,7 +64,7 @@ async def cmd_bells(message: types.Message, command: CommandObject):
                                  "`2`|`сокращённый` - расписание для сокращённого дня")
             return
         else:
-            if date.today().weekday() == 6:
+            if date.today().weekday() == 5:
                 day = "weekend_day"
             else:
                 day = "working_day"
