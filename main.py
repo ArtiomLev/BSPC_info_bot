@@ -14,8 +14,7 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=config.bot_token.get_secret_value(),
           default=DefaultBotProperties(
               parse_mode=ParseMode.MARKDOWN_V2
-          )
-          )
+          ))
 
 dp = Dispatcher()
 bells = BellSchedule(config.bells)
@@ -30,8 +29,7 @@ async def cmd_start(message: types.Message):
                                              "и (при желании) подгруппу:\n"
                                              "/setsubgroup [1/2]\n"
                                              "\n"
-                                             "/help для справки")
-                         )
+                                             "/help для справки"))
 
 
 @dp.message(Command("help"))
