@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import date
+from datetime import date, timedelta
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command, CommandObject
 from aiogram.client.default import DefaultBotProperties
@@ -19,7 +19,6 @@ bot = Bot(token=config.bot_token.get_secret_value(),
 
 dp = Dispatcher()
 bells = BellSchedule(config.bells)
-week = Week()
 
 
 @dp.message(Command("start"))
@@ -48,7 +47,10 @@ async def cmd_start(message: types.Message):
                                              "`1`|`выходной` - расписание для выходного дня\n"
                                              "`2`|`сокращённый` - расписание для сокращённого дня\n"
                                              "\n"
-                                             "/week - получить текущую неделю (верхняя/нижняя)"))
+                                             "/week - получить текущую неделю, в воскресенье - следующую "
+                                             "(верхняя/нижняя)\n"
+                                             "/nextweek - получить следующую неделю (верхняя/нижняя)\n"
+                                             "/currweek - получить текущую неделю в любом случае (верхняя/нижняя)"))
 
 
 @dp.message(Command("bells"))
@@ -84,7 +86,28 @@ async def cmd_bells(message: types.Message, command: CommandObject):
 
 @dp.message(Command("week"))
 async def cmd_week(message: types.Message):
+    week = Week()
+    if date.today().weekday() == 6:
+        next_week = week.next_week()
+        answer = "Сегодня воскресенье\n"
+        answer += "Следующая неделя *" + next_week.week_type().upper() + "*"
+    else:
+        answer = "Сейчас *" + week.week_type().upper() + "* неделя"
+    await message.answer(escape_for_telegram(answer))
+
+
+@dp.message(Command("currweek"))
+async def cmd_currweek(message: types.Message):
+    week = Week()
     answer = "Сейчас *" + week.week_type().upper() + "* неделя"
+    await message.answer(escape_for_telegram(answer))
+
+
+@dp.message(Command("nextweek"))
+async def cmd_nextweek(message: types.Message):
+    week = Week()
+    next_week = week.next_week()
+    answer = "Следующая неделя *" + next_week.week_type().upper() + "*"
     await message.answer(escape_for_telegram(answer))
 
 

@@ -36,7 +36,12 @@ class Week:
 
     def week_type(self) -> str:
         """Возвращает 'верхняя' или 'нижняя'"""
-        return "верхняя" if self.is_upper else "нижняя"
+        return "верхняя" if self.is_upper() else "нижняя"
+
+    def next_week(self):
+        """Возвращает объект Week для следующей недели"""
+        next_monday = self.current_monday + timedelta(days=7)
+        return Week(next_monday)
 
     def __str__(self):
-        return f"{self.week_type()} неделя (№{self.week_number})".capitalize()
+        return f"{self.week_type()} неделя (№{self.week_number}|{self.is_upper()})".capitalize()
