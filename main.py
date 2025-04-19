@@ -7,6 +7,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from config_reader import config
 from bells import BellSchedule
+from week import Week
 from my_escape_function import escape_for_telegram
 
 logging.basicConfig(level=logging.INFO)
@@ -18,6 +19,7 @@ bot = Bot(token=config.bot_token.get_secret_value(),
 
 dp = Dispatcher()
 bells = BellSchedule(config.bells)
+week = Week()
 
 
 @dp.message(Command("start"))
@@ -78,6 +80,12 @@ async def cmd_bells(message: types.Message, command: CommandObject):
             await message.answer(escape_for_telegram("Аргументы не верны!"))
             return
     await message.answer(escape_for_telegram(bells.format_day_bells(day)))
+
+
+@dp.message(Command("week"))
+async def cmd_week(message: types.Message):
+    answer = "Сейчас *" + week.week_type().upper() + "* неделя"
+    await message.answer(escape_for_telegram(answer))
 
 
 async def main():
