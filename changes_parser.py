@@ -1,8 +1,9 @@
+import re
 import locale
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Union
 
 # Установка локали
 try:
@@ -58,6 +59,31 @@ class ReplacementSchedule:
         content_div = soup.find('div', id='MCZ_Content')
         if not content_div:
             return None
+
+        header = content_div.find('h1')
+        changes_date = None
+        if header:
+            text = header.get_text(strip=True)
+            # Ищем дату в формате ДД.ММ.ГГГГ
+            match = re.search(r'(\d{2}\.\d{2}\.\d{4})', text)
+            if match:
+                try:
+                    changes_date = datetime.strptime(match.group(1), '%d.%m.%Y')
+                except ValueError:
+                    pass
+
+        header = content_div.find('h2')
+        changes_day = None
+        if header:
+            try:
+                changes_day = header.text.strip().capitalize()
+            except ValueError:
+                pass
+
+        replacements_dict["info"] = {
+            "date": changes_date,
+            "day": changes_day
+        }
 
         tables = content_div.find_all('table', border="1")
         for table in tables:
@@ -145,7 +171,7 @@ class ReplacementSchedule:
 
 
 class Replacements:
-    def __init__(self, data: Dict[str, List[List[Any]]]):
+    def __init__(self, data: Dict[str, Union[List[List[Any]], Dict[str, Any]]]):
         """
         Принимает на вход словарь с заменами в формате:
         {
@@ -172,6 +198,8 @@ class Replacements:
 
             sorted_entries = sorted(entries, key=sort_key)
             self._data[group] = sorted_entries
+        self._changes_date = data["info"]["date"]
+        self._changes_day = data["info"]["day"]
 
     def get_all(self) -> Dict[str, List[List[Any]]]:
         """Возвращает все замены в исходном (отсортированном) формате."""
@@ -232,3 +260,28 @@ class Replacements:
 
         matches.sort(key=sort_key_teacher)
         return matches
+
+    def is_current_week(self) -> bool:
+        """
+        Проверяет, относятся ли замены к текущей неделе.
+        Возвращает False, если дата замен не определена.
+        """
+        if not self._changes_date:
+            return False
+        now = datetime.now()
+        current_week = now.isocalendar().week
+        current_year = now.year
+        changes_week = self._changes_date.isocalendar().week
+        changes_year = self._changes_date.year
+        return (current_year == changes_year) and (current_week == changes_week)
+
+    def is_day_matches(self, target_day: str) -> bool:
+        """
+        Проверяет, совпадает ли день недели замен с указанным.
+        Учитывает регистр (преобразует к заглавным буквам).
+        Возвращает False, если день недели не определен.
+        """
+        if not self._changes_day:
+            return False
+        target_day = target_day.capitalize()
+        return self._changes_day == target_day
