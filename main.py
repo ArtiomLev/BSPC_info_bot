@@ -1,6 +1,7 @@
+import locale
 import asyncio
 import logging
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command, CommandObject
 from aiogram.client.default import DefaultBotProperties
@@ -9,6 +10,24 @@ from config_reader import config
 from bells import BellSchedule
 from week import Week
 from my_escape_function import escape_for_telegram
+from changes_parser import ReplacementSchedule
+
+# Установка локали
+try:
+    locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')  # Для Unix/Linux
+except locale.Error:
+    locale.setlocale(locale.LC_TIME, 'Russian_Russia.1251')  # Для Windows
+
+changes_parser = ReplacementSchedule(config.changes["base_url"], config.changes["base_link"])
+
+today = datetime.now().date()
+if today.weekday() == 5:
+    next_working_day = today + timedelta(days=2)
+else:
+    next_working_day = today + timedelta(days=1)
+
+today_changes = changes_parser.get_replacements(today.strftime('%A').capitalize())
+next_working_day_changes = changes_parser.get_replacements(next_working_day.strftime('%A').capitalize())
 
 logging.basicConfig(level=logging.INFO)
 

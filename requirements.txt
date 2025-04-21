@@ -2,3 +2,5 @@ aiogram<4.0
 pydantic
 pydantic-settings
 pyyaml
+requests
+beautifulsoup4

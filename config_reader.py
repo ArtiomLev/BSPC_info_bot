@@ -7,6 +7,7 @@ import yaml
 class Settings(BaseSettings):
     bot_token: SecretStr
     bells: Dict
+    changes: Dict
 
 
 try:
