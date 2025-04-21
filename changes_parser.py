@@ -196,8 +196,12 @@ class Replacements:
                 # Во всех других случаях (время или многозначные числа) ставим в конец
                 return float('inf')
 
+            if group == 'info':
+                continue
+
             sorted_entries = sorted(entries, key=sort_key)
             self._data[group] = sorted_entries
+
         self._changes_date = data["info"]["date"]
         self._changes_day = data["info"]["day"]
 
