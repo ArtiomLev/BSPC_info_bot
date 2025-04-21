@@ -12,24 +12,46 @@ from week import Week
 from my_escape_function import escape_for_telegram
 from changes_parser import ReplacementSchedule
 
+# Логирование
+logging.basicConfig(level=logging.INFO)
+
 # Установка локали
 try:
     locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')  # Для Unix/Linux
 except locale.Error:
     locale.setlocale(locale.LC_TIME, 'Russian_Russia.1251')  # Для Windows
 
+# Переменные для замен
+today_changes = None
+next_working_day_changes = None
 changes_parser = ReplacementSchedule(config.changes["base_url"], config.changes["base_link"])
 
-today = datetime.now().date()
-if today.weekday() == 5:
-    next_working_day = today + timedelta(days=2)
-else:
-    next_working_day = today + timedelta(days=1)
 
-today_changes = changes_parser.get_replacements(today.strftime('%A').capitalize())
-next_working_day_changes = changes_parser.get_replacements(next_working_day.strftime('%A').capitalize())
+async def update_changes():
+    """Получение замен"""
+    global today_changes, next_working_day_changes
 
-logging.basicConfig(level=logging.INFO)
+    logging.log(logging.INFO, "Updating changes!")
+
+    today = datetime.now().date()
+    if today.weekday() == 5:
+        next_working_day = today + timedelta(days=2)
+    else:
+        next_working_day = today + timedelta(days=1)
+
+    today_changes = changes_parser.get_replacements(today.strftime('%A').capitalize())
+    next_working_day_changes = changes_parser.get_replacements(next_working_day.strftime('%A').capitalize())
+
+    logging.log(logging.INFO, "Changes updated!")
+
+
+async def changes_always_update(period_min: int):
+    """Автоматическое обновление замен.
+    `period_min` - период обновления в минутах"""
+    while True:
+        await update_changes()
+        await asyncio.sleep(period_min * 60)  # Спать 30 минут
+
 
 bot = Bot(token=config.bot_token.get_secret_value(),
           default=DefaultBotProperties(
@@ -131,6 +153,7 @@ async def cmd_nextweek(message: types.Message):
 
 
 async def main():
+    asyncio.create_task(changes_always_update(30))
     await dp.start_polling(bot)
 
 
