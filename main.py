@@ -16,14 +16,14 @@ from handlers.week import router as week_router
 from handlers.registration import router as register_router
 from handlers.changes import router as changes_router
 
-# Логирование
-logging.basicConfig(level=logging.INFO)
-
 # Установка локали
 try:
     locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')  # Для Unix/Linux
 except locale.Error:
     locale.setlocale(locale.LC_TIME, 'Russian_Russia.1251')  # Для Windows
+
+# Логирование
+logging.basicConfig(level=logging.INFO)
 
 # Переменные для замен
 today_replacements = None
