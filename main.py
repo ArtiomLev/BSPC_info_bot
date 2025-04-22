@@ -14,6 +14,7 @@ from handlers.basic import router as basic_router
 from handlers.bells import router as bells_router
 from handlers.week import router as week_router
 from handlers.registration import router as register_router
+from handlers.changes import router as changes_router
 
 # Логирование
 logging.basicConfig(level=logging.INFO)
@@ -66,6 +67,7 @@ dp.include_router(basic_router)
 dp.include_router(bells_router)
 dp.include_router(week_router)
 dp.include_router(register_router)
+dp.include_router(changes_router)
 
 
 async def main():
