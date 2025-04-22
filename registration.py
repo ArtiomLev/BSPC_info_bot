@@ -102,7 +102,7 @@ async def process_role(cb: types.CallbackQuery, state: FSMContext):
         await cb.message.edit_text(text, parse_mode=ParseMode.MARKDOWN)
 
         kb = InlineKeyboardBuilder()
-        kb.button(text="Пропустить", callback_data="skip:name")
+        kb.button(text="Пропустить", callback_data="skip:fname")
         kb.adjust(1)
         await cb.message.answer(
             "Введите *имя*:", parse_mode=ParseMode.MARKDOWN,
