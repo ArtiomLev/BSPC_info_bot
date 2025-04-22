@@ -3,7 +3,7 @@ import locale
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-from typing import Dict, List, Any, Union
+from typing import *
 
 # Установка локали
 try:
