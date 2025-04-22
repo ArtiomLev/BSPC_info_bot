@@ -1,9 +1,13 @@
 import re
 import locale
 import requests
+import logging
+import asyncio
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import *
+# Настройки
+from configs.config_reader import config
 
 # Установка локали
 try:
@@ -289,3 +293,36 @@ class Replacements:
             return False
         target_day = target_day.capitalize()
         return self._changes_day == target_day
+
+
+class ReplacementManager:
+    def __init__(self, replacements_parser):
+        self.today_replacements = None
+        self.next_working_day_replacements = None
+        self.parser = replacements_parser
+
+    async def update_replacements(self):
+        """Получение и обновление замен"""
+        logging.info("Updating changes!")
+
+        today = datetime.now().date()
+        next_working_day = self._calculate_next_working_day(today)
+
+        self.today_replacements = self.parser.get_replacements(today.strftime('%A').capitalize())
+        self.next_working_day_replacements = self.parser.get_replacements(next_working_day.strftime('%A').capitalize())
+
+        logging.info("Changes updated!")
+
+    async def start_periodic_updates(self, period_min: int = 30):
+        """Запуск периодического обновления"""
+        while True:
+            await self.update_replacements()
+            await asyncio.sleep(period_min * 60)
+
+    def _calculate_next_working_day(self, today):
+        if today.weekday() == 5:  # Суббота
+            return today + timedelta(days=2)
+        return today + timedelta(days=1)
+
+
+replacements_manager = ReplacementManager(ReplacementSchedule(config.changes["base_url"], config.changes["base_link"]))
