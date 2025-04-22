@@ -12,6 +12,7 @@ from week import Week
 from my_escape_function import escape_for_telegram
 from changes_parser import ReplacementSchedule
 import database
+from registration import router as reg_router
 
 # Логирование
 logging.basicConfig(level=logging.INFO)
@@ -60,6 +61,8 @@ bot = Bot(token=config.bot_token.get_secret_value(),
           ))
 
 dp = Dispatcher()
+dp.include_router(reg_router)
+
 bells = BellSchedule(config.bells)
 
 

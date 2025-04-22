@@ -1,4 +1,5 @@
 import aiosqlite
+from typing import *
 
 # Файл базы данных
 users_db_file = None
@@ -90,4 +91,79 @@ async def init_users_db(file: str = None):
                 ]
             )
         # Сохранить изменения
+        await db.commit()
+
+
+async def get_groups(db_path: str = None) -> Union[list[tuple[int, str, str]], list[None]]:
+    """Возвращает список (group_id, faculty_name, group_name), отсортированный по факультету и имени группы."""
+    global users_db_file
+    if db_path is not None:
+        db_file = db_path
+    elif users_db_file is not None:
+        db_file = users_db_file
+    else:
+        raise ValueError("Not selected name of SQLite database file")
+    async with aiosqlite.connect(db_file) as db:
+        cursor = await db.execute(
+            '''SELECT g.group_id, f.faculty_name, g.group_name
+               FROM groups g
+               JOIN faculty f USING(faculty_id)
+               ORDER BY f.faculty_name, g.group_name'''
+        )
+        return await cursor.fetchall()
+
+
+async def create_user(user_id: int, role: str, db_path: str = None) -> None:
+    """Создаёт или обновляет запись в users"""
+    global users_db_file
+    if db_path is not None:
+        db_file = db_path
+    elif users_db_file is not None:
+        db_file = users_db_file
+    else:
+        raise ValueError("Not selected name of SQLite database file")
+    async with aiosqlite.connect(db_file) as db:
+        await db.execute(
+            "INSERT OR REPLACE INTO users(user_id, role) VALUES(?,?)",
+            (user_id, role)
+        )
+        await db.commit()
+
+
+async def save_student(user_id: int, group_id: int, subgroup: int, first_name: str | None, last_name: str,
+                       db_path: str = None) -> None:
+    """Сохраняет данные студента в таблицу students"""
+    global users_db_file
+    if db_path is not None:
+        db_file = db_path
+    elif users_db_file is not None:
+        db_file = users_db_file
+    else:
+        raise ValueError("Not selected name of SQLite database file")
+    async with aiosqlite.connect(db_file) as db:
+        await db.execute(
+            '''INSERT OR REPLACE INTO students
+               (user_id, group_id, subgroup, first_name, last_name)
+               VALUES(?,?,?,?,?)''',
+            (user_id, group_id, subgroup, first_name, last_name)
+        )
+        await db.commit()
+
+
+async def save_teacher(user_id: int, first_name: str | None, last_name: str, db_path: str = None) -> None:
+    """Сохраняет данные преподавателя в таблицу teachers"""
+    global users_db_file
+    if db_path is not None:
+        db_file = db_path
+    elif users_db_file is not None:
+        db_file = users_db_file
+    else:
+        raise ValueError("Not selected name of SQLite database file")
+    async with aiosqlite.connect(db_file) as db:
+        await db.execute(
+            '''INSERT OR REPLACE INTO teachers
+               (user_id, first_name, last_name)
+               VALUES(?,?,?)''',
+            (user_id, first_name, last_name)
+        )
         await db.commit()
