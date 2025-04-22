@@ -235,6 +235,8 @@ async def skip_lname(cb: types.CallbackQuery, state: FSMContext):
         await cb.message.edit_text(escape_for_telegram("❗ Преподаватель обязан ввести фамилию."))
         return
 
+    await state.clear()
+
 
 @router.message(RegStates.last_name)
 async def input_last(message: types.Message, state: FSMContext):
