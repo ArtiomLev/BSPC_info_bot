@@ -1,8 +1,20 @@
 import aiosqlite
 
+# Файл базы данных
+users_db_file = None
 
-async def init_users_db(file: str):
-    async with aiosqlite.connect(file) as db:
+
+async def init_users_db(file: str = None):
+    global users_db_file
+    if file is not None:
+        db_file = file
+        if users_db_file is None:
+            users_db_file = file
+    elif users_db_file is not None:
+        db_file = users_db_file
+    else:
+        raise ValueError("Not selected name of SQLite database file")
+    async with aiosqlite.connect(db_file) as db:
         # Разрешение ключей из других таблиц
         await db.execute("PRAGMA foreign_keys = ON;")
         # Создание таблицы пользователей если отсутствует
