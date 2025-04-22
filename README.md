@@ -1,5 +1,8 @@
 # Информационный бот брестского политехнического колледжа
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Telegram API Lib](https://img.shields.io/badge/Telegram%20API%20Lib-aiogram-blue?logo=telegram)](https://github.com/aiogram/aiogram)
+
 ## Использование
 
 ### Список команд
