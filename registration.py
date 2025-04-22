@@ -1,5 +1,6 @@
 from aiogram import Router, types
 from aiogram.enums import ParseMode
+from aiogram.filters import StateFilter
 from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
@@ -44,7 +45,11 @@ async def cmd_register(message: types.Message, state: FSMContext):
     kb.adjust(2)
 
     await message.answer(
-        "*Регистрация*\nВыберите вашу роль:",
+        "*Регистрация*\n"
+        "\n"
+        "/cancel для отмены на любом этапе\n"
+        "\n"
+        "Выберите вашу роль:",
         parse_mode=ParseMode.MARKDOWN,
         reply_markup=kb.as_markup()
     )
@@ -303,3 +308,13 @@ async def cmd_unregister(message: types.Message):
     else:
         await message.answer(escape_for_telegram("⚠️ Ошибка при удалении аккаунта\n"
                                                  "Обратитесь к администратору!"))
+
+
+# ================================
+# Отмена регистрации
+# ================================
+@router.message(Command("cancel"), StateFilter(*RegStates.__all_states__))
+async def cmd_cancel(message: types.Message, state: FSMContext):
+    """Отмена процесса регистрации"""
+    await state.clear()
+    await message.answer(escape_for_telegram("🚫 Регистрация отменена."))
