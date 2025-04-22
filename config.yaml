@@ -1,7 +1,8 @@
 changes:
   base_url: "https://bspc.bstu.by"
   base_link: "/ru/uchashchimsya/zamena-zanyatij"
-
+users:
+  main_admin: 1827596987
 bells:
   working_day:
     name: "Рабочий день"

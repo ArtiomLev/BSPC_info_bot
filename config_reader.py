@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     bot_token: SecretStr
     bells: Dict
     changes: Dict
+    users: Dict
 
 
 try:
