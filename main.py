@@ -6,13 +6,13 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command, CommandObject
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from config_reader import config
-from bells import BellSchedule
-from week import Week
-from my_escape_function import escape_for_telegram
-from changes_parser import ReplacementSchedule
-import database
-from registration import router as reg_router
+from configs.config_reader import config
+from core.bells import BellSchedule
+from core.week import Week
+from core.my_utils import escape_for_telegram
+from core.changes import ReplacementSchedule
+import database.database as database
+from handlers.registration import router as reg_router
 
 # Логирование
 logging.basicConfig(level=logging.INFO)
@@ -160,7 +160,7 @@ async def cmd_nextweek(message: types.Message):
 
 
 async def main():
-    await database.init_users_db("users.sqlite")
+    await database.init_users_db("database/users.sqlite")
     asyncio.create_task(changes_always_update(30))
     await dp.start_polling(bot)
 

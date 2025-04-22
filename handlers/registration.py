@@ -5,8 +5,8 @@ from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from my_escape_function import escape_for_telegram
-import database
+from core.my_utils import escape_for_telegram
+import database.database as database
 
 router = Router()
 

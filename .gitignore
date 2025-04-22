@@ -1,5 +1,6 @@
-/token.txt
 venv
 .idea
-users.sqlite
+__pycache__
+configs/token.txt
+database/users.sqlite
 test.py

@@ -17,7 +17,7 @@ try:
     with open("config.yaml") as file:
         raw_config = yaml.safe_load(file) or {}
 except FileNotFoundError as err:
-    raise RuntimeError(f"Missing configuration file: {err.filename()}")
+    raise RuntimeError(f"Missing configuration file!")
 
 try:
     config = Settings(
@@ -27,5 +27,3 @@ try:
 
 except ValidationError as err:
     raise RuntimeError(f"Configuration errors: {err.errors()}")
-
-
