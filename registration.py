@@ -15,14 +15,10 @@ router = Router()
 # ================================
 class RegStates(StatesGroup):
     role = State()  # выбор роли: student/teacher
-    # состояния для студента
     group_select = State()  # выбор группы по ID из списка
     subgroup = State()  # выбор подгруппы (1 или 2)
     first_name = State()  # ввод/пропуск имени
-    last_name = State()  # ввод фамилии
-    # состояния для преподавателя
-    t_first_name = State()  # ввод/пропуск имени
-    t_last_name = State()  # ввод фамилии
+    last_name = State()  # ввод/пропуск фамилии
 
 
 # ================================
@@ -111,7 +107,7 @@ async def process_role(cb: types.CallbackQuery, state: FSMContext):
             "Введите *имя* (необязательно):", parse_mode=ParseMode.MARKDOWN,
             reply_markup=kb.as_markup()
         )
-        await state.set_state(RegStates.t_first_name)
+        await state.set_state(RegStates.first_name)
 
 
 # ================================
@@ -164,7 +160,7 @@ async def process_subgroup(cb: types.CallbackQuery, state: FSMContext):
 
 
 # ================================
-# 6. Обработка имени студента
+# 6. Обработка имени
 # ================================
 @router.callback_query(lambda cb: cb.data == "skip:fname", RegStates.first_name)
 async def skip_fname(cb: types.CallbackQuery, state: FSMContext):
@@ -198,7 +194,7 @@ async def input_fname(message: types.Message, state: FSMContext):
     kb.adjust(1)
 
     await message.answer(
-        "Введите *фамилию* (обязательно):", parse_mode=ParseMode.MARKDOWN,
+        "Введите *фамилию*:", parse_mode=ParseMode.MARKDOWN,
         reply_markup=kb.as_markup()
     )
     await state.set_state(RegStates.last_name)
