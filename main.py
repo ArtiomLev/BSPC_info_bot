@@ -70,10 +70,8 @@ bells = BellSchedule(config.bells)
 async def cmd_start(message: types.Message):
     """Приветственное сообщение"""
     await message.answer(escape_for_telegram("Привет!\n"
-                                             "Для работы бота требуется задать группу:\n"
-                                             "/setgroup [группа]\n"
-                                             "и (при желании) подгруппу:\n"
-                                             "/setsubgroup [1/2]\n"
+                                             "Для работы бота требуется зарегистрироваться:\n"
+                                             "/register"
                                              "\n"
                                              "/help для справки"))
 
@@ -85,6 +83,9 @@ async def cmd_start(message: types.Message):
                                              "/start - приветственное сообщение\n"
                                              "\n"
                                              "/help - справка (это сообщение)\n"
+                                             "\n"
+                                             "/register - регистрация с системе бота\n"
+                                             "/unregister - удалить все записи из базы данных\n"                                    
                                              "\n"
                                              "/bells [день] - расписание звонков, "
                                              "если не указать день - будет текущий\n"
