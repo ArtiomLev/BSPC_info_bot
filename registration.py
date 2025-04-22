@@ -175,15 +175,16 @@ async def skip_fname(cb: types.CallbackQuery, state: FSMContext):
         kb = InlineKeyboardBuilder()
         kb.button(text="Пропустить", callback_data="skip:lname")
         kb.adjust(1)
+        markup = kb.as_markup()
     else:
-        kb = None
+        markup = None
 
     await cb.message.edit_text(
         escape_for_telegram("Имя пропущено.")
     )
     await cb.message.answer(
         "Введите *фамилию*:", parse_mode=ParseMode.MARKDOWN,
-        reply_markup=kb.as_markup()
+        reply_markup=markup
     )
     await state.set_state(RegStates.last_name)
 
