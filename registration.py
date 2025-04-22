@@ -100,13 +100,15 @@ async def process_role(cb: types.CallbackQuery, state: FSMContext):
             "\"_Необязательные поля_\""
         )
         await cb.message.edit_text(text, parse_mode=ParseMode.MARKDOWN)
+
         kb = InlineKeyboardBuilder()
         kb.button(text="Пропустить", callback_data="skip:name")
         kb.adjust(1)
         await cb.message.answer(
-            "Введите *имя* (необязательно):", parse_mode=ParseMode.MARKDOWN,
+            "Введите *имя*:", parse_mode=ParseMode.MARKDOWN,
             reply_markup=kb.as_markup()
         )
+
         await state.set_state(RegStates.first_name)
 
 
