@@ -272,3 +272,24 @@ async def input_last(message: types.Message, state: FSMContext):
 
     # Завершаем FSM
     await state.clear()
+
+
+# ================================
+# Удаление пользователя
+# ================================
+@router.message(Command("unregister"))
+async def cmd_unregister(message: types.Message):
+    """Удаление пользователя из системы"""
+    user_id = message.from_user.id
+
+    if not await database.user_exists(user_id, database.users_db_file):
+        await message.answer(escape_for_telegram("❌ Вы не зарегистрированы!"))
+        return
+
+    success = await database.delete_user(user_id, database.users_db_file)
+
+    if success:
+        await message.answer(escape_for_telegram("✅ Ваш аккаунт полностью удалён!"))
+    else:
+        await message.answer(escape_for_telegram("⚠️ Ошибка при удалении аккаунта\n"
+                                                 "Обратитесь к администратору!"))

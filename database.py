@@ -182,3 +182,23 @@ async def user_exists(user_id: int, db_path: str = None) -> bool:
             (user_id,)
         )
         return bool(await cursor.fetchone())
+
+
+async def delete_user(user_id: int, db_path: str = None) -> bool:
+    """Удаляет пользователя из всех таблиц через каскадное удаление"""
+    global users_db_file
+    db_file = db_path or users_db_file
+    if not db_file:
+        raise ValueError("Database file not specified")
+
+    async with aiosqlite.connect(db_file) as db:
+        await db.execute("DELETE FROM students WHERE user_id = ?", (user_id,))
+        await db.execute("DELETE FROM teachers WHERE user_id = ?", (user_id,))
+        await db.execute("DELETE FROM admins WHERE user_id = ?", (user_id,))
+
+        cursor = await db.execute(
+            "DELETE FROM users WHERE user_id = ?",
+            (user_id,)
+        )
+        await db.commit()
+        return cursor.rowcount > 0
