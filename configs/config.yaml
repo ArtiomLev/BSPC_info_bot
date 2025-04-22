@@ -1,6 +1,7 @@
 changes:
   base_url: "https://bspc.bstu.by"
   base_link: "/ru/uchashchimsya/zamena-zanyatij"
+  max_attempts: 5
 users:
   main_admin: 1827596987
 bells:

@@ -41,22 +41,32 @@ class ReplacementSchedule:
                 self.replacements_links[day_name] = full_link
 
     def get_replacements_raw(self, day_name=None):
-        if not self.replacements_links:
-            self.fetch_replacements_links()
 
-        if day_name:
-            day_name = day_name.capitalize()
-            if day_name not in self.replacements_links:
-                return None
-            url = self.replacements_links[day_name]
-        else:
-            today = datetime.now().strftime('%A')
-            day_name = today.capitalize()
-            if day_name not in self.replacements_links:
-                return None
-            url = self.replacements_links[day_name]
+        response = None
+        max_attempts = int(config.changes["max_attempts"])
+        for attempt in range(max_attempts):
+            try:
+                if not self.replacements_links:
+                    self.fetch_replacements_links()
 
-        response = requests.get(url)
+                if day_name:
+                    day_name = day_name.capitalize()
+                    if day_name not in self.replacements_links:
+                        return None
+                    url = self.replacements_links[day_name]
+                else:
+                    today = datetime.now().strftime('%A')
+                    day_name = today.capitalize()
+                    if day_name not in self.replacements_links:
+                        return None
+                    url = self.replacements_links[day_name]
+
+                response = requests.get(url)
+            except Exception:
+                if attempt == max_attempts + 1:  # Все попытки исчерпаны
+                    raise RuntimeError("Cannot connect to server!")
+                continue
+
         soup = BeautifulSoup(response.content, 'html.parser')
 
         replacements_dict = {}
