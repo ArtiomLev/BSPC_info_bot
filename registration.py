@@ -229,6 +229,9 @@ async def skip_lname(cb: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     role = data.get("role")
 
+    # Создаём запись в users
+    await database.create_user(cb.from_user.id, role, database.users_db_file)
+
     if role == "student":
         # Сохраняем студента
         await database.save_student(
@@ -261,7 +264,7 @@ async def input_last(message: types.Message, state: FSMContext):
         f"Фамилия: *{message.text.strip()}*", parse_mode=ParseMode.MARKDOWN
     )
 
-    # Создаём или обновляем запись в users
+    # Создаём запись в users
     await database.create_user(message.from_user.id, role, database.users_db_file)
 
     if role == "student":
