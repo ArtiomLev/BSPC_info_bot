@@ -12,9 +12,9 @@ class Settings(BaseSettings):
 
 
 try:
-    with open("token.txt") as file:
+    with open("configs/token.txt") as file:
         raw_token = file.read().strip()
-    with open("config.yaml") as file:
+    with open("configs/config.yaml") as file:
         raw_config = yaml.safe_load(file) or {}
 except FileNotFoundError as err:
     raise RuntimeError(f"Missing configuration file!")
