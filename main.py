@@ -78,7 +78,7 @@ async def cmd_start(message: types.Message):
 
 @dp.message(Command("help"))
 async def cmd_start(message: types.Message):
-    await message.answer(escape_for_telegram("*Справка:*\n"
+    await message.answer(escape_for_telegram("Справка:\n"
                                              "\n"
                                              "/start - приветственное сообщение\n"
                                              "\n"
