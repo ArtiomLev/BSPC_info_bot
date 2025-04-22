@@ -35,6 +35,12 @@ async def cmd_register(message: types.Message, state: FSMContext):
     Очищаем предыдущий контекст и просим выбрать роль.
     """
     await state.clear()
+
+    # Проверка наличия пользователя
+    if await database.user_exists(message.from_user.id, database.users_db_file):
+        await message.answer(escape_for_telegram("❌ Вы уже зарегистрированы!"))
+        return
+
     # Строим две кнопки: студент / преподаватель
     kb = InlineKeyboardBuilder()
     kb.button(text="👩‍🎓 Студент", callback_data="reg:student")

@@ -167,3 +167,18 @@ async def save_teacher(user_id: int, first_name: str | None, last_name: str, db_
             (user_id, first_name, last_name)
         )
         await db.commit()
+
+
+async def user_exists(user_id: int, db_path: str = None) -> bool:
+    """Проверяет наличие пользователя в таблице users"""
+    global users_db_file
+    db_file = db_path or users_db_file
+    if not db_file:
+        raise ValueError("Database file not specified")
+
+    async with aiosqlite.connect(db_file) as db:
+        cursor = await db.execute(
+            "SELECT 1 FROM users WHERE user_id = ?",
+            (user_id,)
+        )
+        return bool(await cursor.fetchone())
