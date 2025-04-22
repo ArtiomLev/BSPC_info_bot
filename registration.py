@@ -235,7 +235,8 @@ async def skip_lname(cb: types.CallbackQuery, state: FSMContext):
         )
         await cb.message.answer(escape_for_telegram("✅ Регистрация завершена!"))
     else:
-        await cb.message.edit_text(escape_for_telegram("❗ Преподаватель обязан ввести фамилию."))
+        await cb.message.edit_text(escape_for_telegram("❗ Преподаватель обязан ввести фамилию.\n"
+                                                       "Введите фамилию:"))
         return
 
     await state.clear()
