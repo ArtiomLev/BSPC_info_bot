@@ -66,10 +66,10 @@ async def process_role(cb: types.CallbackQuery, state: FSMContext):
         # Описание обязательных и опциональных полей
         text = escape_for_telegram(
             "*Поля для студента:*\n"
-            "- группа\n"
-            "- подгруппа\n"
-            "- _имя_\n"
-            "- _фамилия_\n"
+            "• группа\n"
+            "• подгруппа\n"
+            "• _имя_\n"
+            "• _фамилия_\n"
             "\n"
             "\"_Необязательные поля_\""
         )
@@ -92,8 +92,8 @@ async def process_role(cb: types.CallbackQuery, state: FSMContext):
         # Для преподавателя
         text = escape_for_telegram(
             "*Поля для преподавателя:*\n"
-            "- фамилия\n"
-            "- _имя_\n"
+            "• фамилия\n"
+            "• _имя_\n"
             "\n"
             "\"_Необязательные поля_\""
         )
