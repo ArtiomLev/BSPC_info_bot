@@ -168,10 +168,15 @@ async def process_subgroup(cb: types.CallbackQuery, state: FSMContext):
 async def skip_fname(cb: types.CallbackQuery, state: FSMContext):
     """Пропуск ввода имени"""
     await state.update_data(first_name=None)
+    data = await state.get_data()
+    role = data.get("role")
 
-    kb = InlineKeyboardBuilder()
-    kb.button(text="Пропустить", callback_data="skip:lname")
-    kb.adjust(1)
+    if role == "student":
+        kb = InlineKeyboardBuilder()
+        kb.button(text="Пропустить", callback_data="skip:lname")
+        kb.adjust(1)
+    else:
+        kb = None
 
     await cb.message.edit_text(
         escape_for_telegram("Имя пропущено.")
