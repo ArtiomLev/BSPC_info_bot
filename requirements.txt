@@ -4,3 +4,4 @@ pydantic-settings
 pyyaml
 requests
 beautifulsoup4
+aiosqlite

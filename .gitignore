@@ -1,4 +1,5 @@
 /token.txt
 venv
 .idea
+users.sqlite
 test.py

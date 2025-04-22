@@ -11,6 +11,7 @@ from bells import BellSchedule
 from week import Week
 from my_escape_function import escape_for_telegram
 from changes_parser import ReplacementSchedule
+import database
 
 # Логирование
 logging.basicConfig(level=logging.INFO)
@@ -153,6 +154,7 @@ async def cmd_nextweek(message: types.Message):
 
 
 async def main():
+    await database.init_users_db("users.sqlite")
     asyncio.create_task(changes_always_update(30))
     await dp.start_polling(bot)
 
