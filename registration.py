@@ -205,7 +205,7 @@ async def input_fname(message: types.Message, state: FSMContext):
 
 
 # ================================
-# 7. Сохранение данных
+# 7. Получение фамилии и сохранение данных
 # ================================
 
 @router.callback_query(lambda cb: cb.data == "skip:lname", RegStates.last_name)
@@ -239,7 +239,7 @@ async def skip_lname(cb: types.CallbackQuery, state: FSMContext):
 @router.message(RegStates.last_name)
 async def input_last(message: types.Message, state: FSMContext):
     """
-    Финальный шаг: сохраняем пользователя в users,
+    Сохраняем пользователя в users,
     а затем в students или teachers через database
     """
     data = await state.get_data()
