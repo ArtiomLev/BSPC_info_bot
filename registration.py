@@ -11,7 +11,7 @@ router = Router()
 
 
 # ================================
-# 1. Описание состояний FSM
+# Описание состояний FSM
 # ================================
 class RegStates(StatesGroup):
     role = State()  # выбор роли: student/teacher
@@ -22,7 +22,7 @@ class RegStates(StatesGroup):
 
 
 # ================================
-# 2. Старт регистрации
+# Старт регистрации
 # ================================
 @router.message(Command("register"))
 async def cmd_register(message: types.Message, state: FSMContext):
@@ -52,7 +52,7 @@ async def cmd_register(message: types.Message, state: FSMContext):
 
 
 # ================================
-# 3. Обработка выбора роли
+# Обработка выбора роли
 # ================================
 @router.callback_query(lambda cb: cb.data and cb.data.startswith("reg:"), RegStates.role)
 async def process_role(cb: types.CallbackQuery, state: FSMContext):
@@ -113,7 +113,7 @@ async def process_role(cb: types.CallbackQuery, state: FSMContext):
 
 
 # ================================
-# 4. Получение группы и выбор подгруппы
+# Получение группы и выбор подгруппы
 # ================================
 @router.callback_query(lambda cb: cb.data.startswith("grp_id:"), RegStates.group_select)
 async def process_group_select(cb: types.CallbackQuery, state: FSMContext):
@@ -139,7 +139,7 @@ async def process_group_select(cb: types.CallbackQuery, state: FSMContext):
 
 
 # ================================
-# 5. Выбор подгруппы и запрос имени студента
+# Выбор подгруппы и запрос имени студента
 # ================================
 @router.callback_query(lambda cb: cb.data.startswith("sub:"), RegStates.subgroup)
 async def process_subgroup(cb: types.CallbackQuery, state: FSMContext):
@@ -162,7 +162,7 @@ async def process_subgroup(cb: types.CallbackQuery, state: FSMContext):
 
 
 # ================================
-# 6. Обработка имени
+# Обработка имени
 # ================================
 @router.callback_query(lambda cb: cb.data == "skip:fname", RegStates.first_name)
 async def skip_fname(cb: types.CallbackQuery, state: FSMContext):
@@ -209,7 +209,7 @@ async def input_fname(message: types.Message, state: FSMContext):
 
 
 # ================================
-# 7. Получение фамилии и сохранение данных
+# Получение фамилии и сохранение данных
 # ================================
 
 @router.callback_query(lambda cb: cb.data == "skip:lname", RegStates.last_name)
