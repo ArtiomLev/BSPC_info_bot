@@ -243,6 +243,9 @@ async def input_last(message: types.Message, state: FSMContext):
     data = await state.get_data()
     role = data.get("role")
     last = message.text.strip()
+    await message.answer(
+        f"Фамилия: *{message.text.strip()}*", parse_mode=ParseMode.MARKDOWN
+    )
 
     # Создаём или обновляем запись в users
     await database.create_user(message.from_user.id, role, database.users_db_file)
